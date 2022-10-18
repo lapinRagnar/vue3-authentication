@@ -1,14 +1,32 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+
+  <NavBar/>
 
   <div class="container">
     <router-view/>
   </div>
+
 </template>
 
-<style lang="scss">
+<script setup>
+  import NavBar from '@/components/NavBar.vue'
+</script>
 
+<style lang="scss">
+  
+  * {
+  
+    a:link { 
+      text-decoration:none;
+    } 
+    
+    a {
+      
+      &:hover{
+        background-color: green;
+        border-radius: 3px;
+      }
+    }
+    
+  }
 </style>
