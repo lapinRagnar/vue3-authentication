@@ -40,6 +40,8 @@
 <script>
 
 import SignupValidations from '@/services/SignupValidations'
+import { mapActions } from 'vuex'
+import { SIGNUP_ACTION } from '@/store/storeConstants'
 
 export default {
 
@@ -53,15 +55,25 @@ export default {
 
   methods: {
 
+    ...mapActions({
+      signup: SIGNUP_ACTION
+    }),
+
     onSignup(){
 
       let validations = new SignupValidations(this.email, this.password)
 
       this.errors = validations.checkValidations()
 
-      if (this.errors.length) {
+      if ('email' in this.errors || 'password' in this.errors) {
         return false
       }
+
+      // registration
+      this.signup({
+        email: this.email,
+        password: this.password,
+      })
       
     }
   }

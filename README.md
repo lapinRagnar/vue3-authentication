@@ -24,3 +24,13 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 https://www.creative-tim.com/vuematerial/getting-started
 
+
+### techno
+
+vuex
+axios
+
+
+firebase :
+https://firebase.google.com/docs/reference/rest/auth#section-create-email-password
+

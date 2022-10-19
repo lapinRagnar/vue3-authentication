@@ -10,6 +10,11 @@
 
 <script setup>
   import NavBar from '@/components/NavBar.vue'
+  import { onMounted } from '@vue/runtime-core'
+
+  onMounted: {
+    console.log('bonjour', process.env)
+  }
 </script>
 
 <style lang="scss">
