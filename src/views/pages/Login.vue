@@ -2,7 +2,7 @@
   
   <div class="row centrer ">
     <div class="col-md-6 ladiv">
-      <h1>Login</h1>
+      <h1>Login - {{ name }} </h1>
       <div>
         <form>
           <div class="form-group mb-3">
@@ -21,8 +21,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
+
+
 export default {
 
+  
+
+  computed: {
+    ...mapState({
+      name: state => state.name
+    })
+  }
 }
 </script>
 
