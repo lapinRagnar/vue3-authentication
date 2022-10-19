@@ -1,20 +1,35 @@
 import Axios from 'axios'
 import { createStore } from 'vuex'
-import { SIGNUP_ACTION } from './storeConstants'
+import { SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
 
 export default createStore({
 
   state: {
-    name: "essai"
+    name: "essai",
+    token: '',
+    email: '',
+    userId: '',
+    refreshToken: '',
+    expiresIn: '',
+
   },
   getters: {
   },
+
   mutations: {
+
+    [SET_USER_TOKEN_DATA_MUTATION](state, payload){
+      state.email = payload.email
+      state.token = payload.token
+      state.expiresIn = payload.expiresIn
+      state.userId = payload.userId
+      state.refreshToken = payload.refreshToken
+    }
   },
 
   actions: {
 
-    async [SIGNUP_ACTION](_, payload){
+    async [SIGNUP_ACTION](context, payload){
 
       let postData = {
         email: payload.email,
@@ -27,12 +42,24 @@ export default createStore({
         url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_ENV_API_KEY}`,
         data: postData
       }) 
-      .then(function (response) {
-        console.log(response);
+      // .then(function (response) {
+      //   console.log(response);
+      //   })
+      // .catch(function (error) {
+      //   console.log(error);
+      // })
+
+      if (response.status == 200) {
+
+        context.commit(SET_USER_TOKEN_DATA_MUTATION, {
+          email: response.data.email,
+          token: response.data.idToken,
+          expiresIn: response.data.expiresIn,
+          refreshToken: response.data.refreshToken,
+          userId: response.data.localId
         })
-      .catch(function (error) {
-        console.log(error);
-      })
+
+      }
 
     }
 
