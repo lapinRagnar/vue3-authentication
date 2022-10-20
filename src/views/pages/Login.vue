@@ -1,14 +1,19 @@
 <template>
   
   <div class="row centrer ">
+
     <div class="col-md-6 ladiv">
+
       <h1 class="titre">Login - {{ name }} </h1>
+
+      <div class="alert alert-danger" v-if="error">{{ error }}</div>
+
       <div>
         <form @submit.prevent="onLogin">
           
           <div class="form-group mb-3">
             
-            <input type="email" class="form-control" placeholder="email" v-model="email">
+            <input type="email" class="form-control" placeholder="email" v-model.trim="email">
             
             <div class="error" v-if="errors.email"> {{ errors.email }} </div>
             
@@ -16,7 +21,7 @@
 
           <div class="form-group mb-3">
             
-            <input type="password" class="form-control" placeholder="mot de passe" v-model="password">
+            <input type="password" class="form-control" placeholder="mot de passe" v-model.trim="password">
           
             <div class="error" v-if="errors.password"> {{ errors.password }} </div>
           
@@ -34,7 +39,8 @@
 
 <script>
 
-import { mapState } from 'vuex';
+import { LOADING_SPINNER_SHOW_MUTATION, LOGING_ACTION } from '@/store/storeConstants';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import SignupValidations from '../../services/SignupValidations.js'
 
 
@@ -45,6 +51,7 @@ export default {
       email: '',
       password: '',
       errors: [],
+      error: ''
     }
   },
 
@@ -55,7 +62,18 @@ export default {
   },
 
   methods: {
-    onLogin(){
+
+    ...mapActions({
+
+      login: LOGING_ACTION
+
+    }),
+
+    ...mapMutations({
+      showLoading: LOADING_SPINNER_SHOW_MUTATION
+    }),
+
+    async onLogin(){
       // la chercher la validation
       let validations = new SignupValidations(this.email, this.password)
 
@@ -64,6 +82,26 @@ export default {
       if (this.errors.length) {
         return false
       }
+
+      this.error = ''
+
+      // spinner
+      this.showLoading(true)
+
+      // login check
+      try{
+
+        await this.login({email: this.email, password: this.password})
+      
+      } catch(e){
+        this.error = e
+        this.showLoading(false)
+      }
+
+
+
+      this.showLoading(false)
+
     }
   }
 }

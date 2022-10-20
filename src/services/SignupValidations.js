@@ -29,6 +29,16 @@ export default class SignupValidations {
 
       case 'EMAIL_EXISTS':
         return 'Ce mail existe déjà!'
+
+      case 'EMAIL_NOT_FOUND':
+        return "Ce mail n'existe pas!"
+
+      case 'INVALID_PASSWORD':
+        return 'mot de passe incorrect!'
+
+      default:
+        return 'erreur bizarre, réessaie stp!'
+
     }
   }
 
