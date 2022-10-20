@@ -2,12 +2,18 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Login from '../views/pages/Login.vue'
 import SignUp from '../views/pages/SignUp.vue'
+import PostView from '@/views/pages/PostView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/posts',
+    name: 'posts',
+    component: PostView
   },
   {
     path: '/login',

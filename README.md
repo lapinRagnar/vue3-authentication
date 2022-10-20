@@ -37,3 +37,7 @@ https://firebase.google.com/docs/reference/rest/auth#section-create-email-passwo
 pure css loader :
 https://loading.io/css/
 
+
+validation js:
+https://www.w3resource.com/javascript/form/email-validation.php
+

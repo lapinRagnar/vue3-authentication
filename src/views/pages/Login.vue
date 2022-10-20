@@ -102,6 +102,8 @@ export default {
 
       this.showLoading(false)
 
+      this.$router.push({name: 'posts'})
+
     }
   }
 }
