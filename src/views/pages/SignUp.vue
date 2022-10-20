@@ -5,6 +5,8 @@
     <div class="col-md-6 ladiv">
       
       <h1 class="titre">Créer un compte</h1>
+
+      <div class="alert alert-danger" v-if="error"> {{ error }} </div>
       
       <div>
         <form @submit.prevent="onSignup">
@@ -50,6 +52,7 @@ export default {
       email: '',
       password: '',
       errors: [],
+      error: ''
     }
   },
 
@@ -73,6 +76,8 @@ export default {
       this.signup({
         email: this.email,
         password: this.password,
+      }).catch(error => {
+        this.error = error
       })
       
     }

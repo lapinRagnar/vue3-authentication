@@ -1,3 +1,4 @@
+import SignupValidations from '@/services/SignupValidations'
 import Axios from 'axios'
 import { createStore } from 'vuex'
 import { SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
@@ -37,17 +38,25 @@ export default createStore({
         returnSecureToken: true
       }
 
-      let response = await Axios({
-        method: 'post',
-        url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_ENV_API_KEY}`,
-        data: postData
-      }) 
-      // .then(function (response) {
-      //   console.log(response);
-      //   })
-      // .catch(function (error) {
-      //   console.log(error);
-      // })
+      let response = ''
+
+      try {
+
+        response = await Axios({
+          method: 'post',
+          url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_ENV_API_KEY}`,
+          data: postData
+        }) 
+
+      } catch(err){
+        
+        let errorMessage = SignupValidations.getErrorMessageFromCode(err.response.data.error.errors[0].message)
+
+        throw errorMessage
+
+      }
+
+
 
       if (response.status == 200) {
 
