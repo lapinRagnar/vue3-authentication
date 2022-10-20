@@ -34,3 +34,6 @@ axios
 firebase :
 https://firebase.google.com/docs/reference/rest/auth#section-create-email-password
 
+pure css loader :
+https://loading.io/css/
+

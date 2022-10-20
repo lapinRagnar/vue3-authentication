@@ -72,6 +72,8 @@ export default {
         return false
       }
 
+      // make spinner true
+
       // registration
       this.signup({
         email: this.email,
@@ -79,6 +81,9 @@ export default {
       }).catch(error => {
         this.error = error
       })
+
+      // make spinner false
+      
       
     }
   }

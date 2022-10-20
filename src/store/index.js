@@ -1,12 +1,13 @@
 import SignupValidations from '@/services/SignupValidations'
 import Axios from 'axios'
 import { createStore } from 'vuex'
-import { SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
+import { LOADING_SPINNER_SHOW_MUTATION, SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
 
 export default createStore({
 
   state: {
     name: "essai",
+    showLoading: false,
     token: '',
     email: '',
     userId: '',
@@ -25,7 +26,13 @@ export default createStore({
       state.expiresIn = payload.expiresIn
       state.userId = payload.userId
       state.refreshToken = payload.refreshToken
+    },
+
+    [LOADING_SPINNER_SHOW_MUTATION](state, payload){
+      state.showLoading = payload
     }
+
+
   },
 
   actions: {
@@ -40,6 +47,8 @@ export default createStore({
 
       let response = ''
 
+      context.commit(LOADING_SPINNER_SHOW_MUTATION, true)
+
       try {
 
         response = await Axios({
@@ -49,6 +58,8 @@ export default createStore({
         }) 
 
       } catch(err){
+
+        context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
         
         let errorMessage = SignupValidations.getErrorMessageFromCode(err.response.data.error.errors[0].message)
 
@@ -56,7 +67,7 @@ export default createStore({
 
       }
 
-
+      context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
 
       if (response.status == 200) {
 
