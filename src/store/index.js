@@ -1,7 +1,16 @@
 import SignupValidations from '@/services/SignupValidations'
 import Axios from 'axios'
 import { createStore } from 'vuex'
-import { AUTH_ACTION, GET_USER_TOKEN_GETTER, IS_USER_AUTHENTICATE_GETTER, LOADING_SPINNER_SHOW_MUTATION, LOGING_ACTION, LOGOUT_ACTION, SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
+import { 
+  AUTH_ACTION, 
+  AUTH_AUTO_LOGIN_ACTION, 
+  GET_USER_TOKEN_GETTER, 
+  IS_USER_AUTHENTICATE_GETTER, 
+  LOADING_SPINNER_SHOW_MUTATION, 
+  LOGING_ACTION, LOGOUT_ACTION, 
+  SET_USER_TOKEN_DATA_MUTATION, 
+  SIGNUP_ACTION 
+} from './storeConstants'
 
 export default createStore({
 
@@ -46,7 +55,7 @@ export default createStore({
 
   actions: {
 
-    [LOGOUT_ACTION](context, payload){
+    [LOGOUT_ACTION](context){
 
       context.commit(SET_USER_TOKEN_DATA_MUTATION, {
         email: null,
@@ -55,7 +64,18 @@ export default createStore({
         refreshToken: null,
         userId: null
       })
+      
+      localStorage.removeItem('userData')
 
+    },
+
+    [AUTH_AUTO_LOGIN_ACTION](context){
+
+      let userData = localStorage.getItem('userData')
+
+      if (userData){
+        context.commit(SET_USER_TOKEN_DATA_MUTATION, JSON.parse(userData))
+      }
     },
 
     async [LOGING_ACTION](context, payload){
@@ -103,13 +123,17 @@ export default createStore({
 
       if (response.status == 200) {
 
-        context.commit(SET_USER_TOKEN_DATA_MUTATION, {
+        let tokenData = {
           email: response.data.email,
           token: response.data.idToken,
           expiresIn: response.data.expiresIn,
           refreshToken: response.data.refreshToken,
           userId: response.data.localId
-        })
+        }
+
+        localStorage.setItem('userData', JSON.stringify(tokenData))
+
+        context.commit(SET_USER_TOKEN_DATA_MUTATION, tokenData)
 
       }
 
