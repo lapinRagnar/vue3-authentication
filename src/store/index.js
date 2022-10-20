@@ -1,7 +1,7 @@
 import SignupValidations from '@/services/SignupValidations'
 import Axios from 'axios'
 import { createStore } from 'vuex'
-import { GET_USER_TOKEN_GETTER, IS_USER_AUTHENTICATE_GETTER, LOADING_SPINNER_SHOW_MUTATION, LOGING_ACTION, LOGOUT_ACTION, SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
+import { AUTH_ACTION, GET_USER_TOKEN_GETTER, IS_USER_AUTHENTICATE_GETTER, LOADING_SPINNER_SHOW_MUTATION, LOGING_ACTION, LOGOUT_ACTION, SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
 
 export default createStore({
 
@@ -60,6 +60,17 @@ export default createStore({
 
     async [LOGING_ACTION](context, payload){
 
+      return context.dispatch(AUTH_ACTION, {
+        ...payload,
+        url: `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_ENV_API_KEY}`
+      })
+
+    },
+
+
+    // gestion de l'authentification
+    async [AUTH_ACTION](context, payload){
+
       let postData = {
         email: payload.email,
         password: payload.password,
@@ -72,7 +83,7 @@ export default createStore({
 
         response = await Axios({
           method: 'post',
-          url: `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_ENV_API_KEY}`,
+          url: payload.url,
           data: postData
         })
 
@@ -103,52 +114,18 @@ export default createStore({
       }
 
 
-
     },
 
+
+    // `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_ENV_API_KEY}`
+
+    // créer un compte
     async [SIGNUP_ACTION](context, payload){
 
-      let postData = {
-        email: payload.email,
-        password: payload.password,
-        returnSecureToken: true
-      }
-
-      let response = ''
-
-      // context.commit(LOADING_SPINNER_SHOW_MUTATION, true)
-
-      try {
-
-        response = await Axios({
-          method: 'post',
-          url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_ENV_API_KEY}`,
-          data: postData
-        }) 
-
-      } catch(err){
-
-        // context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
-        
-        let errorMessage = SignupValidations.getErrorMessageFromCode(err.response.data.error.errors[0].message)
-
-        throw errorMessage
-
-      }
-
-      // context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
-
-      if (response.status == 200) {
-
-        context.commit(SET_USER_TOKEN_DATA_MUTATION, {
-          email: response.data.email,
-          token: response.data.idToken,
-          expiresIn: response.data.expiresIn,
-          refreshToken: response.data.refreshToken,
-          userId: response.data.localId
-        })
-
-      }
+      return context.dispatch(AUTH_ACTION, {
+        ...payload,
+        url: `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_ENV_API_KEY}`
+      })
 
     }
 
