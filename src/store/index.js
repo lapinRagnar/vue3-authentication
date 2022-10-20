@@ -4,13 +4,17 @@ import { createStore } from 'vuex'
 import { 
   AUTH_ACTION, 
   AUTH_AUTO_LOGIN_ACTION, 
+  AUTO_LOGOUT_ACTION, 
   GET_USER_TOKEN_GETTER, 
   IS_USER_AUTHENTICATE_GETTER, 
   LOADING_SPINNER_SHOW_MUTATION, 
   LOGING_ACTION, LOGOUT_ACTION, 
+  SET_AUTO_LOGOUT_MUTATION, 
   SET_USER_TOKEN_DATA_MUTATION, 
   SIGNUP_ACTION 
 } from './storeConstants'
+
+let timer = ''
 
 export default createStore({
 
@@ -22,6 +26,7 @@ export default createStore({
     userId: '',
     refreshToken: '',
     expiresIn: '',
+    autoLogout: false,
 
   },
 
@@ -44,10 +49,16 @@ export default createStore({
       state.expiresIn = payload.expiresIn
       state.userId = payload.userId
       state.refreshToken = payload.refreshToken
+      state.autoLogout = false
     },
 
     [LOADING_SPINNER_SHOW_MUTATION](state, payload){
       state.showLoading = payload
+    },
+
+
+    [SET_AUTO_LOGOUT_MUTATION](state){
+      state.autoLogout = true
     }
 
 
@@ -67,14 +78,39 @@ export default createStore({
       
       localStorage.removeItem('userData')
 
+      if (timer) {
+        clearTimeout(timer)
+      }
+
+    },
+
+    [AUTO_LOGOUT_ACTION](context){
+      
+      context.dispatch(LOGOUT_ACTION)
+      context.commit(SET_AUTO_LOGOUT_MUTATION)
+      
     },
 
     [AUTH_AUTO_LOGIN_ACTION](context){
 
-      let userData = localStorage.getItem('userData')
+      let userDataString = localStorage.getItem('String')
 
-      if (userData){
-        context.commit(SET_USER_TOKEN_DATA_MUTATION, JSON.parse(userData))
+      if (userDataString){
+
+        let userData = JSON.parse(userDataString)
+        let expirationTime = userData.expiresIn - new Date().getTime()
+
+        if (expirationTime < 10000){
+          // get the token to the refresh token et do the logout
+          context.dispatch(AUTO_LOGOUT_ACTION)
+        }else {
+
+          timer = setTimeout(() => {
+            context.dispatch(AUTO_LOGOUT_ACTION)
+          }, expirationTime)
+        }
+
+        context.commit(SET_USER_TOKEN_DATA_MUTATION, userData)
       }
     },
 
@@ -123,10 +159,17 @@ export default createStore({
 
       if (response.status == 200) {
 
+        // let expirationTime = +response.data.expiresIn * 1000
+        let expirationTime = +10 * 1000
+
+        timer = setTimeout(() => {
+          context.dispatch(AUTO_LOGOUT_ACTION)
+        }, expirationTime)
+
         let tokenData = {
           email: response.data.email,
           token: response.data.idToken,
-          expiresIn: response.data.expiresIn,
+          expiresIn: expirationTime,
           refreshToken: response.data.refreshToken,
           userId: response.data.localId
         }
