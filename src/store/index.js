@@ -47,7 +47,7 @@ export default createStore({
 
       let response = ''
 
-      context.commit(LOADING_SPINNER_SHOW_MUTATION, true)
+      // context.commit(LOADING_SPINNER_SHOW_MUTATION, true)
 
       try {
 
@@ -59,7 +59,7 @@ export default createStore({
 
       } catch(err){
 
-        context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
+        // context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
         
         let errorMessage = SignupValidations.getErrorMessageFromCode(err.response.data.error.errors[0].message)
 
@@ -67,7 +67,7 @@ export default createStore({
 
       }
 
-      context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
+      // context.commit(LOADING_SPINNER_SHOW_MUTATION, false)
 
       if (response.status == 200) {
 
