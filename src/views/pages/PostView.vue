@@ -24,12 +24,12 @@
     </table>
   
   </div>
-  
+
 </template>
 
 <script>
 
-import axios from 'axios'
+import axiosInstance from '@/services/AxiosTokenInstance'
 import { mapGetters, mapMutations } from 'vuex'
 import { GET_USER_TOKEN_GETTER, LOADING_SPINNER_SHOW_MUTATION } from '@/store/storeConstants'
 
@@ -53,9 +53,9 @@ export default {
 
     this.showLoading(true)
 
-    await axios({
+    await axiosInstance({
       method: 'get',
-      url: `https://vue3-auth-tuto-default-rtdb.europe-west1.firebasedatabase.app/posts.json?auth=${this.token}`
+      url: `https://vue3-auth-tuto-default-rtdb.europe-west1.firebasedatabase.app/posts.json`
     })
     .then(response => {
       
