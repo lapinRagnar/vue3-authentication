@@ -15,7 +15,7 @@
           </li>
 
           <li class="nav-item">
-            <router-link to="/posts" class="nav-link" v-if="isAuthenticated">Post</router-link>
+            <router-link to="/posts" class="nav-link" v-if="!isAuthenticated">Post</router-link>
           </li>
 
           <li class="nav-item">
@@ -35,10 +35,18 @@
             </router-link>
           </li>
 
-          <li class="nav-item" v-if="!isAuthenticated">
+          <li class="nav-item" v-if="isAuthenticated">
             <router-link to="/signup" class="nav-link">
-              <span class="material-icons">logout</span>
+              <span class="material-icons">group_add</span>
             </router-link>
+          </li>
+          
+          
+
+          <li class="nav-item" v-if="!isAuthenticated">
+            
+              <span style="cursor: pointer" class="nav-link material-icons" @click.prevent="onLogout">logout</span>
+            
           </li>
 
         </ul>
@@ -53,8 +61,8 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
-import { IS_USER_AUTHENTICATE_GETTER } from '@/store/storeConstants'
+import { mapActions, mapGetters } from 'vuex'
+import { IS_USER_AUTHENTICATE_GETTER, LOGOUT_ACTION } from '@/store/storeConstants'
 
 export default {
   
@@ -64,6 +72,23 @@ export default {
       isAuthenticated: IS_USER_AUTHENTICATE_GETTER
     }),
 
+
+  },
+
+  methods: {
+
+    ...mapActions({
+
+      logout: LOGOUT_ACTION
+
+    }),
+
+    onLogout(){
+
+      this.logout()
+      this.$router.replace({name: 'login'})
+
+    }
 
   }
 

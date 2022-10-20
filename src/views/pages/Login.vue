@@ -9,6 +9,7 @@
       <div class="alert alert-danger" v-if="error">{{ error }}</div>
 
       <div>
+
         <form @submit.prevent="onLogin">
           
           <div class="form-group mb-3">
@@ -32,6 +33,11 @@
             <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 20px;">Login</button>
           </div>
         </form>
+
+        <small>
+          <a href="#" style="text-decoration: underline;" @click.prevent="goToSignUp">créer un compte</a>
+        </small>
+
       </div>
     </div>
   </div>
@@ -72,6 +78,12 @@ export default {
     ...mapMutations({
       showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
+
+    goToSignUp(){
+
+      this.$router.push({name: 'signup'})
+
+    },
 
     async onLogin(){
       // la chercher la validation

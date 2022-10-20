@@ -1,7 +1,7 @@
 import SignupValidations from '@/services/SignupValidations'
 import Axios from 'axios'
 import { createStore } from 'vuex'
-import { GET_USER_TOKEN_GETTER, IS_USER_AUTHENTICATE_GETTER, LOADING_SPINNER_SHOW_MUTATION, LOGING_ACTION, SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
+import { GET_USER_TOKEN_GETTER, IS_USER_AUTHENTICATE_GETTER, LOADING_SPINNER_SHOW_MUTATION, LOGING_ACTION, LOGOUT_ACTION, SET_USER_TOKEN_DATA_MUTATION, SIGNUP_ACTION } from './storeConstants'
 
 export default createStore({
 
@@ -21,7 +21,7 @@ export default createStore({
     [GET_USER_TOKEN_GETTER]: (state) => state.token,
 
     [IS_USER_AUTHENTICATE_GETTER](state){
-      return !!state.token
+      return !state.token
     }
 
 
@@ -45,6 +45,18 @@ export default createStore({
   },
 
   actions: {
+
+    [LOGOUT_ACTION](context, payload){
+
+      context.commit(SET_USER_TOKEN_DATA_MUTATION, {
+        email: null,
+        token: null,
+        expiresIn: null,
+        refreshToken: null,
+        userId: null
+      })
+
+    },
 
     async [LOGING_ACTION](context, payload){
 

@@ -34,6 +34,11 @@
           </div>
 
         </form>
+
+        <small>
+          <a href="#" style="text-decoration: underline;" @click.prevent="goToLogin">vous avez déjà un compte</a>
+        </small>
+
       </div>
     </div>
   </div>
@@ -65,6 +70,10 @@ export default {
     ...mapMutations({
       showLoading: LOADING_SPINNER_SHOW_MUTATION
     }),
+
+    goToLogin(){
+      this.$router.push({name: 'login'})
+    },
 
     async onSignup(){
 
